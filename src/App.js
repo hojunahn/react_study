@@ -10,19 +10,23 @@ import Greeting from "./Greeting";
 import Welcome from "./Welcome";
 import Section from "./Section";
 import MyComponent from "./MyComponent";
+import Main from "./main";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import UserStore from "./UserStore";
+import GlobalStyle from "./global";
 // 컴포넌트의 합성
 function App() {
   return (
     <>
-      <Section title="스포츠" content="오늘의 프로야구는 기아가 1등 입니다." />
-      <Section title="정치" content="오늘은 영수 회담이 진행 중 입니다." />
-      <hr />
-      <MyComponent name="또치" age={20} />
-      <MyComponent name="희동이" />
-      <MyComponent age={20} />
-      <MyComponent>
-        <h1>여기는 둘리입니다.</h1>
-      </MyComponent>
+      <UserStore>
+        <GlobalStyle />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Welcome />} /> {/* 기본 경로 추가 */}
+            <Route path="/main" element={<Main />} />
+          </Routes>
+        </Router>
+      </UserStore>
     </>
   );
 }
