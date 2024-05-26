@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
 
 const Container = styled.div`
   width: 100vw;
@@ -35,6 +44,7 @@ const ChangeImg = styled.div`
   flex-direction: column;
   background-image: url(img/Rectangle.png);
 `;
+
 const ClickIdol = styled.div`
   display: flex;
   justify-content: center;
@@ -68,26 +78,27 @@ const ClickIdol = styled.div`
     transform: scale(1.1);
   }
 `;
+
 const LeftBox = styled.div`
   position: absolute;
-  display: flex;
-  justify-content: center;
-  width: 40%;
+  width: 50%;
   height: 100%;
   left: 10%;
 `;
+
 const Textbox = styled.div`
   position: absolute;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   display: flex;
-  width: 80%;
-  height: 30%;
+  width: 50%;
+  height: 25%;
   color: #000;
   background: #fff;
   border-radius: 10px;
   top: 10%;
+  left: 5%;
 
   h2 {
     font-size: 18px;
@@ -98,13 +109,21 @@ const Textbox = styled.div`
     font-size: 16px;
   }
 `;
+
 const YouTubeV = styled.div`
   position: absolute;
-  width: 80%;
-  height: 50%;
+  width: 100%;
+  height: 25%;
   background: yellow;
-  bottom: 5%;
+  bottom: 10%;
+  left: 5%;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
+
 const RightBox = styled.div`
   position: absolute;
   z-index: 999;
@@ -114,9 +133,10 @@ const RightBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.5s ease-in-out;
-  transform: ${(props) =>
-    props.showRightBox ? "translateX(0)" : "translateX(100%)"};
+  opacity: ${(props) => (props.showRightBox ? 1 : 0)};
+  visibility: ${(props) => (props.showRightBox ? "visible" : "hidden")};
+  animation: ${(props) => (props.showRightBox ? fadeIn : "none")} 0.5s
+    ease-in-out;
 
   img {
     width: 50%;
@@ -132,6 +152,7 @@ const idols = [
   { name: "고세구", image: "img/gosegu.png" },
   { name: "비챤", image: "img/bechan.png" },
 ];
+
 const Main = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedIdol, setSelectedIdol] = useState(null);
@@ -151,18 +172,24 @@ const Main = () => {
     const selectedIdolInfo = idols.find((idol) => idol.name === idolName);
     if (selectedIdolInfo) {
       setSelectedIdol(idolName);
-      setSelectedIdolImage(selectedIdolInfo.image); // 이미지 경로 업데이트 추가
+      setSelectedIdolImage(selectedIdolInfo.image);
       setShowLeftBox(true);
-      setShowRightBox(true);
+      setShowRightBox(false);
+
+      setTimeout(() => {
+        setShowRightBox(true);
+      }, 50);
     }
   };
 
   return (
     <Container>
+      <header>
+        <menu></menu>
+      </header>
       <SlideImg style={{ transform: `translateX(-${currentSlide * 100}vw)` }}>
         {[1, 2, 3, 4].map((slideNumber) => (
           <SlideBox className={`main${slideNumber}`} key={slideNumber}>
-            {/* 3번째 이미지에만 object-fit: contain;을 적용 */}
             <Slide
               src={`img/mainImg${slideNumber}.png`}
               alt=""
@@ -189,7 +216,16 @@ const Main = () => {
               어떤 이야기를 들려드릴까요?
             </p>
           </Textbox>
-          <YouTubeV></YouTubeV>
+          <YouTubeV>
+            {selectedIdol && (
+              <img
+                src={`img/${selectedIdolImage
+                  .replace("img/", "")
+                  .replace(".png", "Bg.jpg")}`}
+                alt=""
+              />
+            )}
+          </YouTubeV>
         </LeftBox>
         <RightBox showRightBox={showRightBox}>
           {selectedIdolImage && (
