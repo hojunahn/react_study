@@ -15,7 +15,6 @@ const Container = styled.div`
   height: 300vh;
   overflow: hidden;
 `;
-
 const SlideImg = styled.div`
   width: 400vw;
   height: 100vh;
@@ -63,18 +62,21 @@ const ClickIdol = styled.div`
     width: 100%;
     height: 100%;
   }
-  li {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 70%;
-    height: 5%;
-    background: yellow;
-    margin: 20px 0;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-  }
-  li:hover {
+`;
+
+const IdolItem = styled.li`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  height: 5%;
+  background: ${(props) => (props.isSelected ? "navy" : "yellow")};
+  color: ${(props) => (props.isSelected ? "#fff" : "#000")};
+  margin: 20px 0;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+
+  &:hover {
     transform: scale(1.1);
   }
 `;
@@ -97,7 +99,7 @@ const Textbox = styled.div`
   color: #000;
   background: #fff;
   border-radius: 10px;
-  top: 10%;
+  top: 40%;
   left: 5%;
 
   h2 {
@@ -114,9 +116,8 @@ const YouTubeV = styled.div`
   position: absolute;
   width: 100%;
   height: 25%;
-  background: yellow;
-  bottom: 10%;
-  left: 5%;
+  top: 10%;
+  left: 0;
   img {
     width: 100%;
     height: 100%;
@@ -159,6 +160,7 @@ const Main = () => {
   const [selectedIdolImage, setSelectedIdolImage] = useState(null);
   const [showLeftBox, setShowLeftBox] = useState(false);
   const [showRightBox, setShowRightBox] = useState(false);
+  const [selectedIdolName, setSelectedIdolName] = useState(null);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -175,6 +177,7 @@ const Main = () => {
       setSelectedIdolImage(selectedIdolInfo.image);
       setShowLeftBox(true);
       setShowRightBox(false);
+      setSelectedIdolName(idolName);
 
       setTimeout(() => {
         setShowRightBox(true);
@@ -184,9 +187,6 @@ const Main = () => {
 
   return (
     <Container>
-      <header>
-        <menu></menu>
-      </header>
       <SlideImg style={{ transform: `translateX(-${currentSlide * 100}vw)` }}>
         {[1, 2, 3, 4].map((slideNumber) => (
           <SlideBox className={`main${slideNumber}`} key={slideNumber}>
@@ -202,9 +202,13 @@ const Main = () => {
         <ClickIdol>
           <ul>
             {idols.map((idol) => (
-              <li key={idol.name} onClick={() => handleIdolClick(idol.name)}>
+              <IdolItem
+                key={idol.name}
+                onClick={() => handleIdolClick(idol.name)}
+                isSelected={selectedIdolName === idol.name}
+              >
                 {idol.name}
-              </li>
+              </IdolItem>
             ))}
           </ul>
         </ClickIdol>
